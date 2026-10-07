@@ -1,0 +1,23 @@
+services:
+  app:
+    image: document-intelligence-service:dev
+    secrets:
+      - postgres_password
+    environment:
+      SPRING_DATASOURCE_PASSWORD: /run/secrets/postgres_password
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets: # give postgres container access to this secret
+      - postgres_password
+    ports: # host port (published) : container port (target)
+      - "5433:5432"
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
